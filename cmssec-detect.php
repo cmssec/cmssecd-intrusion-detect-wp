@@ -198,6 +198,7 @@ function cmssecd_install()
 	add_option( 'cmssecd_db_version', $cmssecd_db_version );
 }
 
+//
 add_action('admin_menu', 'register_pages');
 add_action('admin_init', 'cmssecd_options_init' );
 
