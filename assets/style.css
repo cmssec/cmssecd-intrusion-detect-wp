@@ -1,0 +1,150 @@
+.cmssec_headbox {
+    height: 3.5em;
+    max-width: 100%;
+    background-color: #383838;
+}
+
+.cmssec_mc {
+    max-width: 100%;
+    height: 10em;
+    background-color: beige;
+}
+
+.cmssec_ad {
+    max-width: 25%;
+    background-color: white;
+    height: 10%;
+    display: inline-block;
+}
+
+.cmssec_mc {
+    max-width: 100%;
+    height: 10em;
+    background-color: beige;
+    display: inline-block;
+}
+
+.cmssec_ad_box1 {
+    background-color: #748FA2;
+    color: white;
+    padding: 20px;
+}
+
+.cmssec_ad_box2 {
+    color: white;   
+    padding: 20px;
+	background: #006e2e; /* Old browsers */
+	background: -moz-linear-gradient(top, #00632A 0%,rgb(2, 138, 59) 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(top, #00632A 0%,rgb(2, 138, 59) 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to bottom,#00632A 0%,rgb(2, 138, 59) 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#006e2e', endColorstr='#006e2e',GradientType=0 ); /* IE6-9 */
+    margin-top: 2em;
+}
+
+
+p.dlsgh {
+    font-size: 31px;
+	text-align: center;
+}
+
+.cmssec_ad_box1_sub {
+    border: 1px solid gainsboro;
+    padding-top: 0.7em;
+    border-radius: 30px;
+    text-align: center;
+	cursor: pointer;
+}
+
+.cmssec_ad_box2_sub {
+    border: 1px solid gainsboro;
+    padding-top: 0.7em;
+    border-radius: 30px;
+    text-align: center;
+    cursor: pointer;
+    background-color: orange;
+}
+
+ul.cmssec_ad_ul2 {
+    padding-top: 2em;
+}
+
+ul.cmssec_ad_ul {
+	list-style-image: url('/wp-content/plugins/cmssecd/assets/img/tick-20px.png');
+    margin-top: 2em;
+}
+
+
+.cmssec_ad_box1_sub:hover {
+	background-color: green;
+}
+
+ul.cmssec_ad_ul {
+    list-style-image: url('/wp-content/plugins/cmssecd/assets/img/tick-20px.png');
+    margin: 0 auto;
+    max-width: 80%;
+    padding-top: 2em;
+}
+
+.btnal {
+  background: #3498db;
+  background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+  background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+  background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+  background-image: -o-linear-gradient(top, #3498db, #2980b9);
+  background-image: linear-gradient(to bottom, #3498db, #2980b9);
+  -webkit-border-radius: 7;
+  -moz-border-radius: 7;
+  border-radius: 7px;
+  text-shadow: 1px 1px 3px #666666;
+  -webkit-box-shadow: 0px 1px 3px #666666;
+  -moz-box-shadow: 0px 1px 3px #666666;
+  box-shadow: 0px 1px 3px #666666;
+  font-family: Georgia;
+  color: #ffffff;
+  font-size: 20px;
+  padding: 15px 35px 15px 35px;
+  text-decoration: none;
+	cursor: pointer;
+}
+
+.btnal:hover {
+  background: #3cb0fd;
+  background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+  background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+  text-decoration: none;
+}
+
+.btnal a {
+    color: inherit;
+}
+
+.cmssec_ad_links1 {
+    margin-top: 2em;
+}
+
+p.dlsgh2 {
+    font-size: 21px;
+    text-align: center;
+}
+
+p.dlsgh3 {
+    font-size: 21px;
+    text-align: center;
+}
+
+.cmssec_pl_menu a {
+    border: 1px solid grey;
+    padding: 10px;
+    background-color: lightgrey;
+    color: #353535;
+    font-size: 15px;
+}
+
+.cmssec_main_wrap {
+    margin-top: 1em;
+    margin-bottom: 2em;
+}
+
