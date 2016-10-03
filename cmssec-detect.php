@@ -1,17 +1,13 @@
 <?php
 /*
-Plugin Name: CMSSec Detect
-Plugin URI: http://cmssec.co/cmssec-detect-plugin
+Plugin Name: cmssecd
+Plugin URI: http://cmssec.co/cmssec-wordpress-plugin
 Description: Intrusion detection plugin for wordpress by http://cmssec.co
-Author: Jonathan Frakes, cmssec.co
+Author: Tech @ cmssec.co
 Version: 1.0
 Author URI: http://cmssec.co
 */
  
-// Go ahead and edit stuff if you know what you're doing, if you're unsure or you need something that this plugin cannot do
-// Feel free to contact me at contact me at tech@cmssec.co
- 
-//
 #defined( 'ABSPATH' ) or die( 'Plugin file cannot be accessed directly.' );
 
 global $cmsecd_db_version;
