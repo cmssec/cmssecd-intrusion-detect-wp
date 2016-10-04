@@ -1,17 +1,28 @@
 <?php
 /*
-Plugin Name: cmssecd
-Plugin URI: http://cmssec.co/cmssec-wordpress-plugin
+Plugin Name: CMSSec Detect
+Plugin URI: http://cmssec.co/cmssec-detect-plugin
 Description: Intrusion detection plugin for wordpress by http://cmssec.co
-Author: Tech @ cmssec.co
+Author: Jonathan Frakes, cmssec.co
 Version: 1.0
 Author URI: http://cmssec.co
 */
  
+// Go ahead and edit stuff if you know what you're doing, if you're unsure or you need something that this plugin cannot do
+// Feel free to contact me at contact me at tech@cmssec.co
+ 
+//
 #defined( 'ABSPATH' ) or die( 'Plugin file cannot be accessed directly.' );
 
+require_once(ABSPATH . 'wp-admin/includes/file.php');
+
 global $cmsecd_db_version;
+$exts = array('php');
 $cmssecd_db_version = '1.0';
+
+if (!cmssecd_installed()) {
+    cmssecd_install();
+}
 
 add_action('init', 'register_script');
 
@@ -29,20 +40,23 @@ function enqueue_style(){
 }
 
 cmssecd_init_filedb();
+#cmssecd_geto();
+
 
 function cmssecd_init_filedb()
 {
     global $wpdb;
+    global $exts;
     $dformat = "Y-m-d H:i:s";
     $now = date($dformat);
-    $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('/sites/torrentgoup.com/htdocs'));
+    $rii = new RecursiveIteratorIterator(new RecursiveDirectoryIterator(get_home_path()));
     
     $phpFiles = array(); 
     foreach ($rii as $file) {
         if (!$file->isDir()) {
             $p = pathinfo($file->getPathname());
             if (isset($p['extension'])) {
-                if ($p['extension'] == "php") {
+                if (in_array($p['extension'], $exts)) {
                     $fname  = $file->getPathName();
                     $md5    = md5_file($fname);
                     $sha256 = hash_file("sha256", $fname);
@@ -62,10 +76,20 @@ function cmssecd_init_filedb()
     
 }
 
+// temporary function
+function cmssecd_geto()
+{
+    global $wpdb;
+    $q = "select * from $wpdb->options where option_name like 'cmssecd_%'";
+    $results = $wpdb->get_results($q, ARRAY_A);
+    
+    file_put_contents("/tmp/res", print_r($results));
+}
+
 function cmssecd_worker() 
 {
-    $interval = get_option('interval');
-    $last_run = get_option('lastrun');
+    $interval = get_option('cmssecd_interval');
+    $last_run = get_option('cmssecd_lastrun');
     
     $date		= date_create();
     
@@ -79,13 +103,13 @@ function cmssecd_worker()
         
         foreach ($changed as $key => $change) {
             if ($change == true) {
-                update_option('changed_' . $key, $change);
+                update_option('cmssecd_changed_' . $key, $change);
             }
         }
     }
     
     // Update last run
-    update_option('lastrun', date('Y-m-d H:i:s'));
+    update_option('cmssecd_lastrun', date('Y-m-d H:i:s'));
 
 }
 
@@ -170,7 +194,7 @@ function cmssecd_install()
 	global $wpdb;
 	global $cmssecd_db_version;
 
-	$table_name = $wpdb->prefix . 'cmssecd';
+	$table_name = $wpdb->prefix . 'cmssec';
 	
 	$charset_collate = $wpdb->get_charset_collate();
 
@@ -183,7 +207,7 @@ function cmssecd_install()
 		mdate datetime,
 		cdate datetime,
 		size int,
-		rights,
+		rights int,
 		comments text,
 		created_date datetime default '0000-00-00 00:00:00',
 		PRIMARY KEY (`id`)
@@ -195,10 +219,9 @@ function cmssecd_install()
 	dbDelta($sql);
 	dbDelta($sql_idx);
 
-	add_option( 'cmssecd_db_version', $cmssecd_db_version );
+	add_option('cmssecd_db_version', $cmssecd_db_version);
 }
 
-//
 add_action('admin_menu', 'register_pages');
 add_action('admin_init', 'cmssecd_options_init' );
 
@@ -208,7 +231,20 @@ function register_pages()
     add_submenu_page( 'cmssec-page', 'Scan for Malware', 'Malware Scan', 'manage_options', 'cmssec-scan', 'scan');
     add_submenu_page( 'cmssec-page', 'Firewall', 'Firewall', 'manage_options', 'cmssec-firewall', 'firewall');
     add_submenu_page( 'cmssec-page', 'WP Integrity', 'WP Integrity', 'manage_options', 'cmssec-wpintegrity', 'integrity');
+    add_submenu_page( 'cmssec-page', 'Plugin Settings', 'Plugin Settings', 'manage_options', 'cmssec-settings', 'settings');
     add_submenu_page( 'cmssec-page', 'Contact CMSSEC', 'Contact CMSSEC', 'manage_options', 'cmssec-contact', 'contact');
+}
+
+function settings()
+{
+    echo init_menu();
+    
+    // lol. Is this require_once path for real ... ?
+    require_once(plugin_dir_path(__FILE__) . '/' . plugin_basename( '/includes/settings.php'));
+    echo make_settings();
+    
+    echo left_side();
+
 }
 
 function contact() 
@@ -239,12 +275,10 @@ function main_page()
     
 }
 
-function left_side()  
+function init_menu()
 {
 
     enqueue_style();
-
-    
     $html = '
     <div class=\'cmssec_wrap\'>
     <div class=\'cmssec_headbox\'>
@@ -252,13 +286,25 @@ function left_side()
     <div class="cmssec_main_wrap">
         <div class="cmssec_pl_wrap">
             <div class="cmssec_pl_menu">
-				<a href="'.menu_page_url('cmssec-page').'">Dashboard</a>
-				<a href="'.menu_page_url('cmssec-scan').'">Malware Scan</a>
+                <a href="'.menu_page_url('cmssec-page', false).'">Dashboard</a>
+                <a href="'.menu_page_url('cmssec-scan', false).'">Malware Scan</a>
+                <a href="'.menu_page_url('cmssec-firewall', false).'">Firewall</a>
+                <a href="'.menu_page_url('cmssec-wpintegrity', false).'">Wordpress Integrity</a>
+                <a href="'.menu_page_url('cmssec-settings', false).'">Plugin Settings</a>
+                <a href="'.menu_page_url('cmssec-contact', false).'">Message Us</a>
             </div>
         </div>
     </div>
     ';
-    $html .= PHP_EOL . file_get_contents(plugins_url('/html.html', __FILE__));
+    return $html;
+}
+
+function left_side()  
+{
+
+    enqueue_style();
+
+    $html = PHP_EOL . file_get_contents(plugins_url('/html.html', __FILE__));
 	return $html;
     
 }
@@ -283,4 +329,23 @@ function cmssecd_options_init()
     register_setting( 'cmssecd_options_options', 'interval' );
         
 }
-        
+
+function cmssecd_installed()
+{
+    $go = get_option('cmssecd_db_version');
+    if (!empty($go)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+function cmssecd_enabled()
+{
+    $go = get_option('cmssecd_enabled');
+    if (!empty($go) && $go == "enabled") {
+        return true;
+    } else {
+        return false;
+    }
+}
